@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2020 Alonso del Arte
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+package payroll;
+
+import currency.CurrencyAmount;
+import entities.Employee;
+import time.DateTimeRange;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Objects;
+
+/**
+ * Represents an employee's time card for a given period of time.
+ * @author Alonso del Arte
+ */
+public class TimeCard implements Serializable {
+    
+    private static final long serialVersionUID = 20200619L;
+    
+    private final Employee cardOwner;
+    
+    private final LocalDateTime startDateTime;
+    private final LocalDateTime endDateTime;
+    
+    private LocalDateTime lastPunchIn;
+    private LocalDateTime lastPunchOut;
+    
+    private boolean hasOngoingTimeBlock = false;
+    private boolean activeFlag = true;
+    private boolean verifiedFlag = false;
+    private boolean paidFlag = false;
+    
+    private final DateTimeRange cardRange;
+    
+    private final ArrayList<DateTimeRange> timeBlocks = new ArrayList<>();
+    
+    public Employee getEmployee() {
+        return this.cardOwner;
+    }
+    
+    public LocalDateTime getStartTime() {
+        return this.startDateTime;
+    }
+    
+    public LocalDateTime getEndTime() {
+        return this.endDateTime;
+    }
+    
+    public long getMinutesSoFar() {
+        long minutes = 0L;
+        minutes = this.timeBlocks.stream().map((block) 
+                -> block.getDuration(ChronoUnit.MINUTES)).reduce(minutes, 
+                        (accumulator, _item) -> accumulator + _item);
+        return minutes;
+    }
+    
+    public CurrencyAmount getPreTaxTotal() {
+        long minutes = this.getMinutesSoFar();
+        double hours = (double) minutes / 60;
+        return this.cardOwner.getHourlyRate().times(hours);
+    }
+    
+    public boolean isCurrent() {
+        LocalDateTime rightNow = LocalDateTime.now();
+        return (this.startDateTime.isBefore(rightNow) 
+                && this.endDateTime.isAfter(rightNow));
+    }
+    
+    public boolean isActive() {
+        return this.activeFlag;
+    }
+    
+    public boolean hasBeenVerified() {
+        return this.verifiedFlag;
+    }
+    
+    public boolean hasBeenPaid() {
+        return this.paidFlag;
+    }
+    
+    public void addTimeBlock(DateTimeRange block) {
+        if (!this.activeFlag) {
+            String excMsg = "Can't add time block to inactive card";
+            throw new IllegalStateException(excMsg);
+        }
+        if (!this.cardRange.contains(block)) {
+            String excMsg = "Can't add " + block.toString() + " to time card " 
+                    + this.cardRange.toString();
+            throw new IllegalArgumentException(excMsg);
+        }
+        this.timeBlocks.add(block);
+    }
+    
+    public void punchIn() {
+        if (!this.isPunchedIn()) {
+            this.hasOngoingTimeBlock = true;
+            this.lastPunchIn = LocalDateTime.now();
+        }
+    }
+    
+    public void punchOut() {
+        if (this.isPunchedIn()) {
+            this.hasOngoingTimeBlock = false;
+            LocalDateTime punchOutTime = LocalDateTime.now();
+            DateTimeRange block = new DateTimeRange(this.lastPunchIn, 
+                    punchOutTime);
+            this.addTimeBlock(block);
+            this.lastPunchOut = punchOutTime;
+        }
+    }
+    
+    public boolean isPunchedIn() {
+        return this.hasOngoingTimeBlock;
+    }
+    
+    public ArrayList<DateTimeRange> getTimeBlocks() {
+        return this.timeBlocks;
+    }
+    
+    public void markActive() {
+        this.activeFlag = true;
+    }
+    
+    public void markInactive() {
+        this.activeFlag = false;
+    }
+    
+    public void markVerified() {
+        if (this.isCurrent()) {
+            String excMsg = "Card can't be verified before " 
+                    + this.endDateTime.toString();
+            throw new IllegalStateException(excMsg);
+        }
+        this.verifiedFlag = true;
+    }
+    
+    public void markPaid() {
+        if (!this.verifiedFlag) {
+            String excMsg = "Unverified card can't be marked as paid";
+            throw new IllegalStateException(excMsg);
+        }
+        this.paidFlag = true;
+        this.activeFlag = false;
+    }
+
+    // Auto-generated by NetBeans 11.2
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.cardOwner);
+        hash = 41 * hash + Objects.hashCode(this.cardRange);
+        return hash;
+    }
+
+    // Auto-generated by NetBeans 11.2
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TimeCard other = (TimeCard) obj;
+        if (!Objects.equals(this.cardOwner, other.cardOwner)) {
+            return false;
+        }
+        return Objects.equals(this.cardRange, other.cardRange);
+    }    
+    
+    public TimeCard(Employee employee, LocalDateTime start, LocalDateTime end) {
+        this.cardRange = new DateTimeRange(start, end);
+        this.startDateTime = start;
+        this.endDateTime = end;
+        this.cardOwner = employee;
+    }
+    
+}
