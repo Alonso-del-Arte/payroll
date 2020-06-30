@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Alonso del Arte
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package portals;
 
@@ -21,7 +33,10 @@ import java.time.LocalDateTime;
 import time.DateTimeRange;
 
 /**
- *
+ * Fetches the current time card for a given employee from the employee records 
+ * data directory. If the employee doesn't have a current time card, a new, 
+ * blank time card is created. Pay periods are assumed to last one week each, 
+ * starting on a Monday at 12:00 a.m. and ending on a Sunday at 11:59 p.m.
  * @author Alonso del Arte
  */
 public class CurrentTimeCardFetcher {
@@ -91,7 +106,8 @@ public class CurrentTimeCardFetcher {
         LocalDate monday = findNearMonday();
         LocalDateTime start = LocalDateTime.of(monday, LocalTime.MIDNIGHT);
         LocalDateTime end = start.plusDays(7).minusMinutes(1);
-        this.fetchedCard = new TimeCard(this.cardOwner, start, end);
+        DateTimeRange period = new DateTimeRange(start, end);
+        this.fetchedCard = new TimeCard(this.cardOwner, period);
         this.addNewCard();
     }
 
@@ -100,7 +116,8 @@ public class CurrentTimeCardFetcher {
         LocalDate monday = findNearMonday();
         LocalDateTime start = LocalDateTime.of(monday, LocalTime.MIDNIGHT);
         LocalDateTime end = start.plusDays(7).minusMinutes(1);
-        TimeCard demoCard = new TimeCard(card.getEmployee(), start, end);
+        DateTimeRange period = new DateTimeRange(start, end);
+        TimeCard demoCard = new TimeCard(card.getEmployee(), period);
         LocalTime workDayBegin = LocalTime.of(8, 0);
         LocalTime lunchBegin = LocalTime.of(12, 0);
         LocalTime lunchEnd = LocalTime.of(13, 0);

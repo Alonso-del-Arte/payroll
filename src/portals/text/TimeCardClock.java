@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Alonso del Arte
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package portals.text;
 
@@ -9,6 +21,7 @@ import entities.Employee;
 import entities.idnumbers.SocialSecurityNumber;
 import payroll.TimeCard;
 import portals.CurrentTimeCardFetcher;
+import portals.EmployeeRecordsProcessor;
 import time.DateTimeRange;
 
 import java.io.IOException;
@@ -23,9 +36,10 @@ import java.util.Scanner;
  */
 public class TimeCardClock {
 
+    // TODO: Break down into smaller units
     public static void main(String[] args) {
         System.out.println();
-        System.out.println("Time Card Clock program, version 0.1");
+        System.out.println("Time Card Clock program, version 0.9");
         System.out.println();
         try (Scanner input = new Scanner(System.in)) {
             System.out.print("Please enter the last four of your SSN: ");
@@ -33,28 +47,26 @@ public class TimeCardClock {
             int last4 = Integer.parseInt(ssnStr);
             Employee employee;
             try {
-                ArrayList<Employee> records = EmployeeRecordsLister.getRecords(last4);
-                switch (records.size()) {
-                    case 0:
-                        System.out.println("No matching records found, sorry...");
-                        employee = Employee.getNullEmployee();
-                        System.exit(0);
-                        break;
-                    case 1:
-                        employee = records.get(0);
-                        break;
-                    default:
-                        System.out.println("Multiple matches found");
-                        for (int i = 0; i < records.size(); i++) {
-                            Employee curr = records.get(i);
-                            System.out.println("[" + (i + 1) + "] "
-                                    + curr.getFullName() + " "
-                                    + ((SocialSecurityNumber) curr.getTIN()).toRedactedString());
-                        }
-                        System.out.print("Which one? ");
-                        String choiceStr = input.nextLine();
-                        int sel = Integer.parseInt(choiceStr) - 1;
-                        employee = records.get(sel);
+                ArrayList<Employee> records
+                        = EmployeeRecordsProcessor.getRecords(last4);
+                if (records.isEmpty()) {
+                    System.out.println("No matching records found, sorry...");
+                    System.exit(0);
+                }
+                if (records.size() == 1) {
+                    employee = records.get(0);
+                } else {
+                    System.out.println("Multiple matches found");
+                    for (int i = 0; i < records.size(); i++) {
+                        Employee curr = records.get(i);
+                        System.out.println("[" + (i + 1) + "] "
+                                + curr.getFullName() + " "
+                                + ((SocialSecurityNumber) curr.getTIN()).toRedactedString());
+                    }
+                    System.out.print("Which one? ");
+                    String choiceStr = input.nextLine();
+                    int sel = Integer.parseInt(choiceStr) - 1;
+                    employee = records.get(sel);
                 }
             } catch (ClassNotFoundException cnfe) {
                 employee = Employee.getNullEmployee();
@@ -98,7 +110,7 @@ public class TimeCardClock {
                     if (choice.toLowerCase().startsWith("y")) {
                         card.punchIn();
                         punchStatusChange = true;
-                        System.out.println("You are now punched in as of " 
+                        System.out.println("You are now punched in as of "
                                 + LocalTime.now());
                     }
                 }

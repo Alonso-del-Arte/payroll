@@ -37,11 +37,7 @@ public class TimeCard implements Serializable {
     
     private final Employee cardOwner;
     
-    private final LocalDateTime startDateTime;
-    private final LocalDateTime endDateTime;
-    
     private LocalDateTime lastPunchIn;
-    private LocalDateTime lastPunchOut;
     
     private boolean hasOngoingTimeBlock = false;
     private boolean activeFlag = true;
@@ -57,11 +53,11 @@ public class TimeCard implements Serializable {
     }
     
     public LocalDateTime getStartTime() {
-        return this.startDateTime;
+        return this.cardRange.getStart();
     }
     
     public LocalDateTime getEndTime() {
-        return this.endDateTime;
+        return this.cardRange.getEnd();
     }
     
     public long getMinutesSoFar() {
@@ -80,8 +76,8 @@ public class TimeCard implements Serializable {
     
     public boolean isCurrent() {
         LocalDateTime rightNow = LocalDateTime.now();
-        return (this.startDateTime.isBefore(rightNow) 
-                && this.endDateTime.isAfter(rightNow));
+        return (this.cardRange.getStart().isBefore(rightNow) 
+                && this.cardRange.getEnd().isAfter(rightNow));
     }
     
     public boolean isActive() {
@@ -123,7 +119,6 @@ public class TimeCard implements Serializable {
             DateTimeRange block = new DateTimeRange(this.lastPunchIn, 
                     punchOutTime);
             this.addTimeBlock(block);
-            this.lastPunchOut = punchOutTime;
         }
     }
     
@@ -146,7 +141,7 @@ public class TimeCard implements Serializable {
     public void markVerified() {
         if (this.isCurrent()) {
             String excMsg = "Card can't be verified before " 
-                    + this.endDateTime.toString();
+                    + this.cardRange.getEnd().toString();
             throw new IllegalStateException(excMsg);
         }
         this.verifiedFlag = true;
@@ -189,10 +184,8 @@ public class TimeCard implements Serializable {
         return Objects.equals(this.cardRange, other.cardRange);
     }    
     
-    public TimeCard(Employee employee, LocalDateTime start, LocalDateTime end) {
-        this.cardRange = new DateTimeRange(start, end);
-        this.startDateTime = start;
-        this.endDateTime = end;
+    public TimeCard(Employee employee, DateTimeRange range) {
+        this.cardRange = range;
         this.cardOwner = employee;
     }
     

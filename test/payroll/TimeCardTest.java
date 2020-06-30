@@ -44,6 +44,10 @@ import static org.junit.Assert.*;
  */
 public class TimeCardTest {
     
+    /**
+     * The test employee's Social Security Number (SSN), 750-10-1729. SSNs with 
+     * area number 750 have never been issued as of June 25, 2011.
+     */
     private static final SocialSecurityNumber SOC_SEC_NUM 
             = new SocialSecurityNumber(750101729);
     
@@ -82,6 +86,9 @@ public class TimeCardTest {
      */
     private static final LocalDateTime TEST_CURRENT_PERIOD_END;
     
+    private static final DateTimeRange TEST_PRIOR_PERIOD;
+    private static final DateTimeRange TEST_CURRENT_PERIOD;
+    
     static {
         LocalDate current = LocalDate.now();
         System.out.println("Today is " 
@@ -93,6 +100,10 @@ public class TimeCardTest {
         TEST_CURRENT_PERIOD_END = current.plusDays(13).atTime(LocalTime.MAX);
         TEST_PRIOR_PERIOD_START = TEST_CURRENT_PERIOD_START.minusDays(14);
         TEST_PRIOR_PERIOD_END = TEST_CURRENT_PERIOD_END.minusDays(14);
+        TEST_PRIOR_PERIOD = new DateTimeRange(TEST_PRIOR_PERIOD_START, 
+                TEST_PRIOR_PERIOD_END);
+        TEST_CURRENT_PERIOD = new DateTimeRange(TEST_CURRENT_PERIOD_START, 
+                TEST_CURRENT_PERIOD_END);
     }
     
     private static TimeCard testPriorPeriodCard, testCurrentPeriodCard;
@@ -104,10 +115,9 @@ public class TimeCardTest {
     
     @Before
     public void setUp() {
-        testPriorPeriodCard = new TimeCard(TEST_EMPLOYEE, TEST_PRIOR_PERIOD_START, 
-                TEST_PRIOR_PERIOD_END);
+        testPriorPeriodCard = new TimeCard(TEST_EMPLOYEE, TEST_PRIOR_PERIOD);
         testCurrentPeriodCard = new TimeCard(TEST_EMPLOYEE, 
-                TEST_CURRENT_PERIOD_START, TEST_CURRENT_PERIOD_END);
+                TEST_CURRENT_PERIOD);
     }
     
     /**
@@ -351,30 +361,6 @@ public class TimeCardTest {
         assert !testPriorPeriodCard.isActive() : msg;
     }
     
-    @Test
-    public void testBadTimesForCard() {
-        try {
-            TimeCard card = new TimeCard(TEST_EMPLOYEE, TEST_PRIOR_PERIOD_END, TEST_PRIOR_PERIOD_START);
-            String msg = "Should not have been able to create card " 
-                    + card.toString() + " that starts on " 
-                    + TEST_PRIOR_PERIOD_END.toString() + " and ends on " 
-                    + TEST_PRIOR_PERIOD_START.toString();
-            fail(msg);
-        } catch (IllegalArgumentException iae) {
-            System.out.println("Trying to make time card that starts on " 
-                    + TEST_PRIOR_PERIOD_END.toString() + " and ends on " 
-                    + TEST_PRIOR_PERIOD_START.toString() 
-                    + " correctly caused IllegalArgumentException");
-            System.out.println("\"" + iae.getMessage() + "\"");
-        } catch (RuntimeException re) {
-            String msg = re.getClass().getName() 
-                    + " is the wrong exception to throw for time card that starts on "
-                    + TEST_PRIOR_PERIOD_END.toString() + " and ends on " 
-                    + TEST_PRIOR_PERIOD_START.toString();
-            fail(msg);
-        }
-    }
-
     @After
     public void tearDown() {
         //
