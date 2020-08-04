@@ -24,10 +24,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- *
+ * An abstract class to represent a legally recognized entity for the purposes 
+ * of paying taxes or being exempt from paying taxes. The entity may be a 
+ * person, a corporation, a non-profit organization, a government agency, etc.
  * @author Alonso del Arte
  */
-public /* abstract */ class Entity implements Serializable {
+public abstract class Entity implements Serializable {
     
     private static final long serialVersionUID = -8556912508988878973L;
     
@@ -66,13 +68,8 @@ public /* abstract */ class Entity implements Serializable {
         if (!Objects.equals(this.fullName, other.fullName)) {
             return false;
         }
-        if (!Objects.equals(this.tinNumber, other.tinNumber)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.tinNumber, other.tinNumber);
     }
-    
-    
     
     protected Entity() {
         this.fullName = "For serialization purposes only";

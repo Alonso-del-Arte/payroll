@@ -21,11 +21,12 @@ import java.util.Locale;
 
 /**
  * Holds a ZIP code for a mailing address in the United States.
- *
  * @author Alonso del Arte
  */
 public class ZIPCode extends PostalCode {
 
+    private static final long serialVersionUID = 4549586280295447347L;
+    
     private final String numStr;
 
     @Override

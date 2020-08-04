@@ -5,6 +5,10 @@
  */
 package portals.gui;
 
+import portals.EmployeeRecordsProcessor;
+
+import javax.swing.JColorChooser;
+
 /**
  *
  * @author Alonso del Arte

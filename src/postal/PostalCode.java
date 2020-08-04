@@ -17,13 +17,16 @@
  */
 package postal;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  *
  * @author Alonso del Arte
  */
-public abstract class PostalCode {
+public abstract class PostalCode implements Serializable {
+    
+    private static final long serialVersionUID = 4549586271705512755L;
     
     protected final long postalCodeNumber;
     
@@ -49,7 +52,9 @@ public abstract class PostalCode {
     
     @Override
     public int hashCode() {
-        return 0;
+        int hash = this.postalGov.hashCode() << 16;
+        hash += this.postalCodeNumber;
+        return hash;
     }
     
     public PostalCode(long number, Locale loc) {

@@ -10,8 +10,10 @@ import entities.idnumbers.SocialSecurityNumber;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +22,23 @@ import java.util.ArrayList;
  */
 public class EmployeeRecordsProcessor {
     
+    public static void addRecord(Employee employee)
+            throws IOException {
+        if (!DataDirectoryInitializer.hasBeenSet()) {
+            DataDirectoryInitializer.setDir();
+        }
+        String pathStr = DataDirectoryInitializer.getDir().getPath()
+                + File.separatorChar + "PersProgempl"
+                + employee.getTIN().hashCode()
+                + ".dat";
+        File file = new File(pathStr);
+        FileOutputStream fileStream = new FileOutputStream(file);
+        try (ObjectOutputStream objStream
+                = new ObjectOutputStream(fileStream)) {
+            objStream.writeObject(employee);
+        }
+    }
+
     public static ArrayList<Employee> getRecords() 
             throws ClassNotFoundException, IOException {
         if (!DataDirectoryInitializer.hasBeenSet()) {

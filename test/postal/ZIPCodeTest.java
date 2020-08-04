@@ -17,6 +17,8 @@
  */
 package postal;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -27,6 +29,13 @@ import static org.junit.Assert.*;
  * @author Alonso del Arte
  */
 public class ZIPCodeTest {
+    
+    @Test
+    public void testSuperClass() {
+        Object zip = new ZIPCode(94020);
+        String msg = "ZIPCode instance should also be PostalCode instance";
+        assert zip instanceof PostalCode : msg;
+    }
     
     @Test
     public void testGetCountry() {
@@ -109,6 +118,24 @@ public class ZIPCodeTest {
         ZIPCode genZIP = new ZIPCode(90210);
         ZIPCode specZIP = new ZIPCode(90210, 4817);
         assertNotEquals(genZIP, specZIP);
+    }
+    
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        ArrayList<ZIPCode> zips = new ArrayList<>();
+        HashSet<Integer> hashes = new HashSet<>();
+        ZIPCode zip;
+        for (int i = 0; i < 10000; i++) {
+            zip = new ZIPCode(90209, i);
+            zips.add(zip);
+            hashes.add(zip.hashCode());
+            zip = new ZIPCode(90210, i);
+            zips.add(zip);
+            hashes.add(zip.hashCode());
+        }
+        String msg = "Two thousand ZIP codes should have 2,000 distinct hash codes";
+        assertEquals(msg, zips.size(), hashes.size());
     }
     
     /**

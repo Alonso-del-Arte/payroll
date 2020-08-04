@@ -19,6 +19,7 @@ package entities;
 
 import currency.CurrencyAmount;
 import entities.idnumbers.SocialSecurityNumber;
+import postal.MailingAddress;
 
 import java.util.Currency;
 import java.util.Locale;
@@ -31,13 +32,15 @@ public class Employee extends Person {
     
     private static final long serialVersionUID = 4993762592960754194L;
     
-    private String rank = "Employee";
-    
     private static final Currency DOLLARS = Currency.getInstance(Locale.US);
     
     private static final CurrencyAmount ZERO_DOLLARS = new CurrencyAmount(0, DOLLARS);
     
+    private String rank = "Employee";
+    
     private CurrencyAmount hourlyPayRate;
+    
+    private MailingAddress addressWork = null;
     
     public String getJobTitle() {
         return this.rank;
@@ -55,11 +58,13 @@ public class Employee extends Person {
         this.hourlyPayRate = rate;
     }
     
+    // TODO: Write test for this
+    public MailingAddress getWorkAddress() {
+        return null; // STUB TO FAIL THE FIRST TEST
+    }
     
-    // TODO: Eliminate need for this "null employee" 
-    public static Employee getNullEmployee() {
-        SocialSecurityNumber ssn = new SocialSecurityNumber(0);
-        return new Employee("None", ssn);
+    public void setWorkAddress(MailingAddress address) {
+        this.addressWork = address;
     }
     
     public Employee(String name, SocialSecurityNumber ssn) {

@@ -23,6 +23,7 @@ import entities.idnumbers.SocialSecurityNumber;
 import java.io.IOException;
 import payroll.TimeCard;
 import portals.CurrentTimeCardFetcher;
+import portals.EmployeeRecordsProcessor;
 
 import java.util.Currency;
 import java.util.Locale;
@@ -68,7 +69,7 @@ public class Demo {
             employee.setJobTitle(TITLES[i]);
             amount = new CurrencyAmount(AMOUNTS[i], DOLLARS);
             employee.setHourlyRate(amount);
-            EmployeeRecordAdder.addRecord(employee);
+            EmployeeRecordsProcessor.addRecord(employee);
             System.out.println("Added record for " + employee.getJobTitle()
                     + " " + employee.getFullName());
             fetcher = new CurrentTimeCardFetcher(employee);

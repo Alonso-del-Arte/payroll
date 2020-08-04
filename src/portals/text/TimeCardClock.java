@@ -37,6 +37,7 @@ import java.util.Scanner;
 public class TimeCardClock {
 
     // TODO: Break down into smaller units
+    // TODO: Address dereferencing possible null pointer warning
     public static void main(String[] args) {
         System.out.println();
         System.out.println("Time Card Clock program, version 0.9");
@@ -45,7 +46,7 @@ public class TimeCardClock {
             System.out.print("Please enter the last four of your SSN: ");
             String ssnStr = input.nextLine();
             int last4 = Integer.parseInt(ssnStr);
-            Employee employee;
+            Employee employee = null;
             try {
                 ArrayList<Employee> records
                         = EmployeeRecordsProcessor.getRecords(last4);
@@ -69,12 +70,10 @@ public class TimeCardClock {
                     employee = records.get(sel);
                 }
             } catch (ClassNotFoundException cnfe) {
-                employee = Employee.getNullEmployee();
                 System.out.println("ClassNotFoundException occurred while reading employee records...");
                 System.out.println("\"" + cnfe.getMessage() + "\"");
                 System.out.println("Please refer this to the programming team.");
             } catch (IOException ioe) {
-                employee = Employee.getNullEmployee();
                 System.out.println(ioe.getClass().getName() + " occurred while reading employee records...");
                 System.out.println("\"" + ioe.getMessage() + "\"");
             }

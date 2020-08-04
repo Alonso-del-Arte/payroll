@@ -8,13 +8,10 @@ package portals.text;
 import currency.CurrencyAmount;
 import entities.Employee;
 import entities.idnumbers.SocialSecurityNumber;
-import portals.DataDirectoryInitializer;
+import portals.EmployeeRecordsProcessor;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Scanner;
@@ -27,23 +24,6 @@ public class EmployeeRecordAdder {
 
     public static final Currency UNITED_STATES_DOLLARS
             = Currency.getInstance(Locale.US);
-
-    public static void addRecord(Employee employee)
-            throws IOException {
-        if (!DataDirectoryInitializer.hasBeenSet()) {
-            DataDirectoryInitializer.setDir();
-        }
-        String pathStr = DataDirectoryInitializer.getDir().getPath()
-                + File.separatorChar + "PersProgempl"
-                + employee.getTIN().hashCode()
-                + ".dat";
-        File file = new File(pathStr);
-        FileOutputStream fileStream = new FileOutputStream(file);
-        try (ObjectOutputStream objStream
-                = new ObjectOutputStream(fileStream)) {
-            objStream.writeObject(employee);
-        }
-    }
 
     public static void main(String[] args) {
         System.out.println();
@@ -80,7 +60,7 @@ public class EmployeeRecordAdder {
             }
             employee.setHourlyRate(rate);
             try {
-                addRecord(employee);
+                EmployeeRecordsProcessor.addRecord(employee);
                 System.out.println("Successfully added record for " + name);
             } catch (NotSerializableException nse) {
                 System.out.println("NotSerializableException occurred...");

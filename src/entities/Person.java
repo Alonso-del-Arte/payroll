@@ -18,6 +18,7 @@
 package entities;
 
 import entities.idnumbers.SocialSecurityNumber;
+import postal.MailingAddress;
 
 /**
  *
@@ -32,6 +33,8 @@ public class Person extends Entity {
     private char middleInitial;
     private String lastName;
     private String suffix;
+    
+    private MailingAddress addressHome = null;
     
     public String getPrefix() {
         return "Not implemented yet";
@@ -71,6 +74,15 @@ public class Person extends Entity {
     
     public void setSuffix(String suffix) {
         //
+    }
+    
+    // TODO: Write test for this
+    public MailingAddress getHomeAddress() {
+        return null; // STUB TO FAIL THE FIRST TEST
+    }
+    
+    public void setHomeAddress(MailingAddress address) {
+        this.addressHome = address;
     }
     
     public Person(String name, SocialSecurityNumber ssn) {

@@ -5,6 +5,8 @@
  */
 package portals.gui;
 
+import portals.EmployeeRecordsProcessor;
+
 /**
  *
  * @author Alonso del Arte
