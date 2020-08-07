@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
  * details.
  *
  * You should have received a copy of the GNU General Public License along with 
@@ -27,6 +27,8 @@ import static org.junit.Assert.*;
  * @author Alonso del Arte
  */
 public class SocialSecurityNumberTest {
+    
+    // TODO: Move the following references into the appropriate Javadoc
     
     // REF: https://www.ssa.gov/history/ssnmyth.html
     
@@ -127,7 +129,7 @@ public class SocialSecurityNumberTest {
     
     
     /**
-     * Test of matchesLastFour
+     * Tests of matchesLastFour function of class SocialSecurityNumber.
      */
     @Test
     public void testMatchesLastFour() {
@@ -137,6 +139,13 @@ public class SocialSecurityNumberTest {
         String msg = "Last four of " + socSecNum.toRedactedString() 
                 + " should match " + num;
         assert socSecNum.matchesLastFour(num) : msg;
+        int diffAreaGroup = 75208;
+        SocialSecurityNumber ssnDiffAreaGroup 
+                = new SocialSecurityNumber(diffAreaGroup * 10000 + num);
+        msg = "Last four of " + socSecNum.toRedactedString() 
+                + " should match last four of " 
+                + ssnDiffAreaGroup.toRedactedString();
+        assert socSecNum.matchesLastFour(ssnDiffAreaGroup) : msg;
     }
     
     @Test

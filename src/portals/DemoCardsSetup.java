@@ -5,6 +5,15 @@
  */
 package portals;
 
+import currency.CurrencyAmount;
+import entities.Employee;
+import entities.idnumbers.SocialSecurityNumber;
+import java.io.IOException;
+import payroll.TimeCard;
+
+import java.util.Currency;
+import java.util.Locale;
+
 /**
  *
  * @author Alonso del Arte

@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
  * details.
  *
  * You should have received a copy of the GNU General Public License along with 
@@ -17,7 +17,6 @@
  */
 package entities;
 
-import entities.idnumbers.SocialSecurityNumber;
 import entities.idnumbers.TaxpayerIdentificationNumber;
 
 import java.io.Serializable;
@@ -37,10 +36,35 @@ public abstract class Entity implements Serializable {
     
     protected final TaxpayerIdentificationNumber tinNumber;
     
+    /**
+     * Gives this entity's name.
+     * @return The same as {@link #getFullName()}. Subclasses are expected to 
+     * override this function or the other, maybe both, to produce a meaningful 
+     * distinction between these two functions.
+     */
+    @Override
+    public String toString() {
+        return this.fullName;
+    }
+    
+    /**
+     * Gives this entity's full name.
+     * @return The same as {@link #toString()}. Subclasses are expected to 
+     * override this function or the other, maybe both, to produce a meaningful 
+     * distinction between these two functions.
+     */
     public String getFullName() {
         return this.fullName;
     }
     
+    /**
+     * Retrieves this entity's taxpayer identification number (TIN). It should 
+     * be a Social Security Number (SSN) in the case of a person, an employer 
+     * identification number (EIN) in the case of a corporation, non-profit 
+     * organization or other organization consisting of two or more persons.
+     * @return A taxpayer identification number (TIN). For example, the Social 
+     * Security Number 000-00-1729 for a fictional person.
+     */
     public TaxpayerIdentificationNumber getTIN() {
         return this.tinNumber;
     }
@@ -69,11 +93,6 @@ public abstract class Entity implements Serializable {
             return false;
         }
         return Objects.equals(this.tinNumber, other.tinNumber);
-    }
-    
-    protected Entity() {
-        this.fullName = "For serialization purposes only";
-        this.tinNumber = new SocialSecurityNumber(0);
     }
     
     public Entity(String name, TaxpayerIdentificationNumber tin) {

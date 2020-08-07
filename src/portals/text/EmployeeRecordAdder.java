@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Alonso del Arte
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package portals.text;
 
@@ -22,8 +34,20 @@ import java.util.Scanner;
  */
 public class EmployeeRecordAdder {
 
+    /**
+     * The default currency, United States dollars. ISO-4217 letter code USD, 
+     * number code 840. Locale-specific symbol is "$".
+     */
     public static final Currency UNITED_STATES_DOLLARS
             = Currency.getInstance(Locale.US);
+    
+    /**
+     * The default minimum hourly rate, USD$15.00 per hour. This will substitute 
+     * for input that can't be parsed as a numerical amount of the currency 
+     * unit.
+     */
+    public static final CurrencyAmount DEFAULT_MINIMUM_HOURLY_RATE 
+            = new CurrencyAmount(1500, UNITED_STATES_DOLLARS);
 
     public static void main(String[] args) {
         System.out.println();
@@ -55,7 +79,7 @@ public class EmployeeRecordAdder {
             } catch (NumberFormatException nfe) {
                 System.out.print("Sorry, didn't catch that: ");
                 System.out.println("\"" + nfe.getMessage() + "\"");
-                rate = new CurrencyAmount(1500, UNITED_STATES_DOLLARS);
+                rate = DEFAULT_MINIMUM_HOURLY_RATE;
                 System.out.println("Substituting " + rate.toString());
             }
             employee.setHourlyRate(rate);

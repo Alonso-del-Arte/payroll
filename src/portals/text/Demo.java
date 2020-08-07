@@ -37,8 +37,18 @@ import java.util.Locale;
  */
 public class Demo {
     
+    /**
+     * The default currency, United States dollars. ISO-4217 letter code USD, 
+     * number code 840. Locale-specific symbol is "$".
+     */
     private static final Currency DOLLARS = Currency.getInstance(Locale.US);
     
+    /**
+     * The names for the fictional employees: Buck Strickland, John Lopez, Hank 
+     * Hill, Lando Calrissian Watson, Theresa Pia&#x142;kowski, Adaego Okafor, 
+     * Zainab Zaman, John Redcorn, Keiko Yamada, Hillary Schrader Whitcher, 
+     * Thomas Thomason, Richard Richardson, Harry Harrison, Sally Sallinen.
+     */
     private static final String[] NAMES = {"Buck Strickland", "John Lopez", 
         "Hank Hill", "Lando Calrissian Watson", "Theresa Pia\u0142kowski",
         "Adaego Okafor", "Zainab Zaman", "John Redcorn", "Keiko Yamada",
@@ -54,7 +64,7 @@ public class Demo {
         "Spokesman", "Chemical Engineer", "Secretary", "Associate", "Associate", 
         "Associate", "Associate"};
     
-    private static final int[] AMOUNTS = {0, 50000, 10000, 8000, 9000, 8025, 
+    private static final int[] AMOUNTS = {0, 20000, 10000, 8000, 9000, 8025, 
         7320, 5000, 12000, 4530, 1500, 1500, 1500, 1500};
     
     private static void setRecords() throws ClassNotFoundException, IOException {
@@ -79,6 +89,11 @@ public class Demo {
         }
     }
     
+    /**
+     * Demonstrates the program with some fictional employees and their time 
+     * cards.
+     * @param args The command line parameters. These are simply ignored.
+     */
     public static void main(String[] args) {
         System.out.println();
         System.out.println("Demo of Payroll program, version 0.1");

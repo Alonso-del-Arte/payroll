@@ -30,6 +30,10 @@ import static org.junit.Assert.*;
  */
 public class ZIPCodeTest {
     
+    /**
+     * Test of the superclass. A <code>ZIPCode</code> instance should also be an 
+     * instance of <code>PostalCode</code>.
+     */
     @Test
     public void testSuperClass() {
         Object zip = new ZIPCode(94020);
@@ -37,9 +41,15 @@ public class ZIPCodeTest {
         assert zip instanceof PostalCode : msg;
     }
     
+    /**
+     * Locale for a ZIP code should always be <code>Locale.US</code> even if a 
+     * different <code>Locale</code> instance might be applicable. Such as the 
+     * Spanish (Puerto Rico) locale for Caguas City Hall in Puerto Rico, 42 Luis 
+     * Mu&ntilde;&oacute;z Rivera Street, Caguas PR 00726-00907.
+     */
     @Test
     public void testGetCountry() {
-        ZIPCode zip = new ZIPCode(2111, 1307);
+        ZIPCode zip = new ZIPCode(726, 907);
         Locale expected = Locale.US;
         Locale actual = zip.getCountry();
         assertEquals(expected, actual);
@@ -97,7 +107,14 @@ public class ZIPCodeTest {
     @Test
     public void testNotEqualsObjectOtherClass() {
         PostalCode realZIP = new ZIPCode(2111, 1307);
-        PostalCode mockZIP = new MockPostalCode(21111307, Locale.US);
+        PostalCode mockZIP = new PostalCode(21111307, Locale.US) {
+        
+            @Override
+            public String toString() {
+                return "ZIP " + String.format("%09d", this.postalCodeNumber);
+            }
+        
+        };
         String msg = realZIP.toString() + " should not be found to be equal to " 
                 + mockZIP.toString();
         assert !realZIP.equals(mockZIP) : msg;

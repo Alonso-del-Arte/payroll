@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
  * details.
  *
  * You should have received a copy of the GNU General Public License along with 
@@ -20,7 +20,7 @@ package entities.idnumbers;
 import java.text.DecimalFormat;
 
 /**
- *
+ * Represents a Social Security Number (SSN).
  * @author Alonso del Arte
  */
 public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
@@ -42,6 +42,7 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
     private final String ssnWDashes;
     private final String lastFour;
 
+    // TODO: Remove this equals() override once TIN equals() override is done
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -69,12 +70,22 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return this.ssnWDashes;
     }
 
+    /**
+     * Redacts a Social Security Number (SSN) to only show the last four digits.
+     * @return The SSN with the first five digits replaced by asterisks. For 
+     * example, 752-98-1729 would be given as "***-**-1729".
+     */
     public String toRedactedString() {
         return "***-**-" + this.lastFour;
     }
     
     public boolean matchesLastFour(int num) {
         return this.serialNumber == num;
+    }
+    
+    // TODO: Write tests for this
+    public boolean matchesLastFour(SocialSecurityNumber other) {
+        return false;
     }
     
     static boolean correctSSNDashPlacement(String s) {
