@@ -79,13 +79,17 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return "***-**-" + this.lastFour;
     }
     
+    // TODO: Write tests for this
+    public int getLastFour() {
+        return this.serialNumber;
+    }
+    
     public boolean matchesLastFour(int num) {
         return this.serialNumber == num;
     }
     
-    // TODO: Write tests for this
     public boolean matchesLastFour(SocialSecurityNumber other) {
-        return false;
+        return this.serialNumber == other.serialNumber;
     }
     
     static boolean correctSSNDashPlacement(String s) {

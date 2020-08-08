@@ -127,6 +127,23 @@ public class SocialSecurityNumberTest {
         assertEquals(expected, actual);
     }
     
+    /**
+     * Tests of getLastFour function of class SocialSecurityNumber.
+     */
+    @Test
+    public void testGetLastFour() {
+        System.out.println("getLastFour");
+        int areaGroup = 7805;
+        int expected = 1120;
+        SocialSecurityNumber ssn = new SocialSecurityNumber(areaGroup 
+                * 10000 + expected);
+        int actual = ssn.getLastFour();
+        assertEquals(expected, actual);
+        expected += 33;
+        ssn = new SocialSecurityNumber(areaGroup * 10000 + expected);
+        actual = ssn.getLastFour();
+        assertEquals(expected, actual);
+    }
     
     /**
      * Tests of matchesLastFour function of class SocialSecurityNumber.
@@ -156,6 +173,13 @@ public class SocialSecurityNumberTest {
         String msg = "Last four of " + socSecNum.toRedactedString() 
                 + " should not match " + diffNum;
         assert !socSecNum.matchesLastFour(diffNum) : msg;
+        int diffAreaGroup = 75208;
+        SocialSecurityNumber ssnDiffAreaGroup 
+                = new SocialSecurityNumber(diffAreaGroup * 10000 + diffNum);
+        msg = "Last four of " + socSecNum.toRedactedString() 
+                + " should not match last four of " 
+                + ssnDiffAreaGroup.toRedactedString();
+        assert !socSecNum.matchesLastFour(ssnDiffAreaGroup) : msg;
     }
     
     @Test
