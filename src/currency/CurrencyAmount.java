@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -19,24 +19,32 @@ package currency;
 
 import java.io.Serializable;
 import java.util.Currency;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents amounts of money in different currencies.
  * @author Alonso del Arte
  */
-public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable {
+public class CurrencyAmount implements Comparable<CurrencyAmount>, 
+        Serializable {
     
     private static final long serialVersionUID = 5023489862247404324L;
     
     private final long amountInCents;
-    private final Currency currency;
+    private final Currency currencyID;
+    
+    private static final Set<Currency> CURRENCIES 
+            = Currency.getAvailableCurrencies();
+    
+    private static Currency parsedCurrency;
     
     @Override
     public String toString() {
-        final int centPlaces = this.currency.getDefaultFractionDigits();
+        final int centPlaces = this.currencyID.getDefaultFractionDigits();
         if (centPlaces == 0) {
-            return this.currency.getSymbol() + this.amountInCents;
+            return this.currencyID.getSymbol() + this.amountInCents;
         }
         String numStr = Long.toString(Math.abs(this.amountInCents));
         while (numStr.length() <= centPlaces) {
@@ -46,7 +54,7 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
             numStr = "-" + numStr;
         }
         int decPointPlace = numStr.length() - centPlaces;
-        return this.currency.getSymbol() + numStr.substring(0, decPointPlace) 
+        return this.currencyID.getSymbol() + numStr.substring(0, decPointPlace) 
                 + "." + numStr.substring(decPointPlace);
     }
 
@@ -54,8 +62,9 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
     public int hashCode() {
 //        return 0;
         int hash = 5;
-        hash = 37 * hash + (int) (this.amountInCents ^ (this.amountInCents >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.currency);
+        hash = 37 * hash + (int) (this.amountInCents 
+                ^ (this.amountInCents >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.currencyID);
         return hash;
     }
 
@@ -71,8 +80,7 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
         if (this.amountInCents != other.amountInCents) {
             return false;
         }
-        return this.currency.equals(other.currency);
-//        return Objects.equals(this.currency, other.currency);
+        return this.currencyID.equals(other.currencyID);
     }
 
     public long getAmountInCents() {
@@ -80,29 +88,29 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
     }
     
     public Currency getCurrency() {
-        return this.currency;
+        return this.currencyID;
     }
     
     /**
      * Adds a currency amount to this currency amount. For example, $2,058.43.
-     * @param addend The currency amount to add. For example, $89.53.
+     * @param addend The currencyID amount to add. For example, $89.53.
      * @return A new <code>CurrencyAmount</code> object with the result. For 
      * example, $2,147.96. There is no overflow checking.
-     * @throws CurrencyConversionNeededException If this currency amount and the 
-     * addend are of different currencies, this exception will be thrown. For 
-     * example, if this amount is $499.89 and the addend is &euro;73.20.
+     * @throws CurrencyConversionNeededException If this currencyID amount and the 
+ addend are of different currencies, this exception will be thrown. For 
+ example, if this amount is $499.89 and the addend is &euro;73.20.
      */
     public CurrencyAmount plus(CurrencyAmount addend) {
-        if (this.currency != addend.currency) {
+        if (this.currencyID != addend.currencyID) {
             throw new CurrencyConversionNeededException("Convert before adding", 
                     this, addend);
         }
-        return new CurrencyAmount(this.amountInCents + addend.amountInCents, 
-                this.currency);
+        long sum = Math.addExact(this.amountInCents, addend.amountInCents);
+        return new CurrencyAmount(sum, this.currencyID);
     }
     
     public CurrencyAmount negate() {
-        return new CurrencyAmount(-this.amountInCents, this.currency);
+        return new CurrencyAmount(-this.amountInCents, this.currencyID);
     }
     
     public CurrencyAmount minus(CurrencyAmount subtrahend) {
@@ -110,13 +118,13 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
     }
     
     public CurrencyAmount times(int multiplier) {
-        return new CurrencyAmount(multiplier * this.amountInCents, this.currency);
+        return new CurrencyAmount(multiplier * this.amountInCents, this.currencyID);
     }
     
     public CurrencyAmount times(double multiplier) {
         if (Double.isFinite(multiplier)) {
             double product = multiplier * this.amountInCents;
-            return new CurrencyAmount(Math.round(product), this.currency);
+            return new CurrencyAmount(Math.round(product), this.currencyID);
         } else {
             String excMsg = "The number " + multiplier + " is not finite";
             throw new ArithmeticException(excMsg);
@@ -124,7 +132,7 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
     }
     
     public CurrencyAmount divides(int divisor) {
-        return new CurrencyAmount(this.amountInCents / divisor, this.currency);
+        return new CurrencyAmount(this.amountInCents / divisor, this.currencyID);
     }
     
     @Override
@@ -133,21 +141,52 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
         return Long.signum(diff.amountInCents);
     }
     
-    public static CurrencyAmount parseAmount(String s) {
-        if (s.equals("LYD7063.255")) {
-            return new CurrencyAmount(0, Currency.getInstance("LYD"));
+    private static String removeSymbol(String s) {
+        boolean notFound = true;
+        Iterator<Currency> iter = CURRENCIES.iterator();
+        Currency currency;
+        String symbol;
+        while (notFound && iter.hasNext()) {
+            currency = iter.next();
+            symbol = currency.getSymbol();
+            if (s.startsWith(symbol)) {
+                s = s.substring(symbol.length());
+                parsedCurrency = currency;
+            }
         }
+        return s;
+    }
+    
+    private static int centSeparation() {
+        switch (parsedCurrency.getDefaultFractionDigits()) {
+            case 0:
+                return 1;
+            case 1:
+                return 10;
+            case 2:
+                return 100;
+            case 3:
+                return 1000;
+            default:
+                String excMsg = "Default fraction digits of " 
+                        + parsedCurrency.getDisplayName() + " not recognized";
+                throw new RuntimeException(excMsg);
+        }
+    }
+    
+    public static CurrencyAmount parseAmount(String s) {
+        s = removeSymbol(s);
         int units;
         int cents = 0;
         int decPointIndex = s.indexOf('.');
         if (decPointIndex > -1) {
             cents = Integer.parseInt(s.substring(decPointIndex + 1));
-            units = Integer.parseInt(s.substring(1, decPointIndex));
+            units = Integer.parseInt(s.substring(0, decPointIndex));
         } else {
-            units = Integer.parseInt(s.substring(1));
+            units = Integer.parseInt(s.substring(0));
         }
-        units *= 100;
-        return new CurrencyAmount(units + cents, Currency.getInstance("USD"));
+        units *= centSeparation();
+        return new CurrencyAmount(units + cents, parsedCurrency);
     }
     
     public CurrencyAmount(long cents, Currency currency) {
@@ -157,7 +196,7 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
             throw new IllegalArgumentException(excMsg);
         }
         this.amountInCents = cents;
-        this.currency = currency;
+        this.currencyID = currency;
     }
     
 }

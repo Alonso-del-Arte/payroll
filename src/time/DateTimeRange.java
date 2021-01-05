@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- *
+ * Represents a period of local time, without regard for time zones.
  * @author Alonso del Arte
  */
 public class DateTimeRange implements Comparable<DateTimeRange>, Serializable {
@@ -32,6 +32,7 @@ public class DateTimeRange implements Comparable<DateTimeRange>, Serializable {
     private final LocalDateTime startTime;
     private final LocalDateTime finishTime;
     
+    // TODO: Write Javadoc for these and other public functions
     public LocalDateTime getStart() {
         return this.startTime;
     }
@@ -141,6 +142,19 @@ public class DateTimeRange implements Comparable<DateTimeRange>, Serializable {
         }
     }
 
+    /**
+     * Sole constructor. Requires a start time and an end time.
+     * @param start When the time range starts. Must not be after  
+     * <code>end</code>. Should not be null. For example, 8:00 a.m. on January 
+     * 4, 2021.
+     * @param end When the time range ends. Must not be prior to 
+     * <code>start</code>. Should not be null. For example, 7:59 a.m. on January 
+     * 18, 2021.
+     * @throws IllegalArgumentException If <code>end</code> is prior to 
+     * <code>start</code>.
+     * @throws NullPointerException If either <code>start</code> or 
+     * <code>end</code> is null.
+     */
     public DateTimeRange(LocalDateTime start, LocalDateTime end) {
         if (end.isBefore(start)) {
             String excMsg = "Range can't start (" + start.toString() 

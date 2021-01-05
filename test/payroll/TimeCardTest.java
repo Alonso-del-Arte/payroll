@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -135,8 +135,10 @@ public class TimeCardTest {
     @Test
     public void testGetStartTime() {
         System.out.println("getStartTime");
-        assertEquals(TEST_PRIOR_PERIOD_START, testPriorPeriodCard.getStartTime());
-        assertEquals(TEST_CURRENT_PERIOD_START, testCurrentPeriodCard.getStartTime());
+        assertEquals(TEST_PRIOR_PERIOD_START, 
+                testPriorPeriodCard.getStartTime());
+        assertEquals(TEST_CURRENT_PERIOD_START, 
+                testCurrentPeriodCard.getStartTime());
     }
 
     /**
@@ -146,7 +148,8 @@ public class TimeCardTest {
     public void testGetEndTime() {
         System.out.println("getEndTime");
         assertEquals(TEST_PRIOR_PERIOD_END, testPriorPeriodCard.getEndTime());
-        assertEquals(TEST_CURRENT_PERIOD_END, testCurrentPeriodCard.getEndTime());
+        assertEquals(TEST_CURRENT_PERIOD_END, 
+                testCurrentPeriodCard.getEndTime());
     }
     
     @Test
@@ -173,8 +176,10 @@ public class TimeCardTest {
     @Test
     public void testIsCurrent() {
         System.out.println("isCurrent");
-        String msg = "Card that started on " + TEST_CURRENT_PERIOD_START.toString() 
-                + " and is slated to end on " + TEST_CURRENT_PERIOD_END.toString() 
+        String msg = "Card that started on " 
+                + TEST_CURRENT_PERIOD_START.toString() 
+                + " and is slated to end on " 
+                + TEST_CURRENT_PERIOD_END.toString() 
                 + " should be considered current";
         assert testCurrentPeriodCard.isCurrent() : msg;
     }
@@ -183,7 +188,7 @@ public class TimeCardTest {
     public void testCurrentCardCanNotBeVerified() {
         try {
             testCurrentPeriodCard.markVerified();
-            String msg = "Should not have been able to mark current card as verified";
+            String msg = "Should not have marked current card as verified";
             fail(msg);
         } catch (IllegalStateException ise) {
             System.out.println("Trying to verify a current card correctly " 
@@ -191,8 +196,7 @@ public class TimeCardTest {
             System.out.println("\"" + ise.getMessage() + "\"");
         } catch (RuntimeException re) {
             String msg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to verify an"
-                    + " ongoing card";
+                    + " is the wrong exception for verifying an ongoing card";
             fail(msg);
         }
     }
@@ -239,7 +243,7 @@ public class TimeCardTest {
         DateTimeRange block = new DateTimeRange(blockBegin, blockFinish);
         try {
             testCurrentPeriodCard.addTimeBlock(block);
-            String msg = "Should not have been able to add time block starting on "
+            String msg = "Should not have added time block starting on "
                     + blockBegin.toString() + " to card starting on " 
                     + TEST_CURRENT_PERIOD_START.toString();
             fail(msg);
@@ -251,7 +255,7 @@ public class TimeCardTest {
             System.out.println("\"" + iae.getMessage());
         } catch (RuntimeException re) {
             String msg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to add time block starting on "
+                    + " is the wrong exception for adding time block starting on "
                     + blockBegin.toString() + " to card starting on " 
                     + TEST_CURRENT_PERIOD_START.toString();
             fail(msg);
@@ -267,7 +271,7 @@ public class TimeCardTest {
         try {
             testPriorPeriodCard.addTimeBlock(block);
             String msg 
-                    = "Should not have been able to add time block to inactive card";
+                    = "Should not have added time block to inactive card";
             fail(msg);
         } catch (IllegalStateException ise) {
             System.out.println("Trying to add time block to inactive card " 
@@ -275,7 +279,7 @@ public class TimeCardTest {
             System.out.println("\"" + ise.getMessage());
         } catch (RuntimeException re) {
             String msg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to add time block "
+                    + " is the wrong exception for adding time block "
                     + "to inactive card";
             fail(msg);
         }
@@ -293,6 +297,32 @@ public class TimeCardTest {
         testCurrentPeriodCard.punchIn();
         String msg = "Card should be recognized as punched in after punching in";
         assert testCurrentPeriodCard.isPunchedIn() : msg;
+    }
+    
+    @Test
+    public void testPunchIn() {
+        System.out.println("punchIn");
+        testCurrentPeriodCard.punchIn();
+    }
+    
+    @Test
+    public void testNoPunchInOnPastPeriodCard() {
+        try {
+            testPriorPeriodCard.punchIn();
+            String msg = "Should not have punched in on card that ended " 
+                    + TEST_PRIOR_PERIOD_END.toString();
+            fail(msg);
+        } catch (IllegalStateException ise) {
+            System.out.println("Trying to punch in on time card that ended on " 
+                    + TEST_PRIOR_PERIOD_END.toString() 
+                    + " correctly caused IllegalStateException");
+            System.out.println("\"" + ise.getMessage() + "\"");
+        } catch (RuntimeException re) {
+            String msg = re.getClass().getName() 
+                    + " is the wrong exception for punching in on card ended on " 
+                    + TEST_PRIOR_PERIOD_END.toString();
+            fail(msg);
+        }
     }
     
     @Test
@@ -363,12 +393,12 @@ public class TimeCardTest {
     
     @After
     public void tearDown() {
-        //
+        // TODO: Remember why I thought I needed tear down
     }
     
     @AfterClass
     public static void tearDownClass() {
-        //
+        // TODO: Remember why I thought I needed tear down
     }
     
 }

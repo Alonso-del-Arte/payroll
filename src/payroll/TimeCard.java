@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -103,6 +104,7 @@ public class TimeCard implements Serializable {
             throw new IllegalArgumentException(excMsg);
         }
         this.timeBlocks.add(block);
+        Collections.sort(this.timeBlocks);
     }
     
     public void punchIn() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -24,6 +24,7 @@ import java.text.DecimalFormatSymbols;
 /**
  * A class to represent taxpayer identification numbers. We take it on faith 
  * that the correct numbers are provided. There is no checking for uniqueness.
+ * @since Version 0.1.
  * @author Alonso del Arte
  */
 public abstract class TaxpayerIdentificationNumber implements Serializable {
@@ -40,12 +41,23 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
     
     protected final int idNum;
     
-    // TODO: Write test requiring nonnegative numbers
+    // STUB TO FAIL THE FIRST TEST
+    @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+    
+    // STUB TO FAIL THE FIRST TEST
+    @Override
+    public int hashCode() {
+        return Integer.MIN_VALUE;
+    }
+    
     public TaxpayerIdentificationNumber(int number) {
-//        if (number < 0) {
-//            String excMsg = "Negative taxpayer identification number not allowed";
-//            throw new IllegalArgumentException(excMsg);
-//        }
+        if (number < 0) {
+            String excMsg = "Negative TIN is not allowed";
+            throw new IllegalArgumentException(excMsg);
+        }
         this.idNum = number;
     }
     

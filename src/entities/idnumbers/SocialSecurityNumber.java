@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -31,9 +31,12 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
     public static final String GROUP_NUMBER_FORMAT = "00";
     public static final String SERIAL_NUMBER_FORMAT = "0000";
 
-    private static final DecimalFormat AREA_NUMBER_FORMATTER = new DecimalFormat(AREA_NUMBER_FORMAT);
-    private static final DecimalFormat GROUP_NUMBER_FORMATTER = new DecimalFormat(GROUP_NUMBER_FORMAT);
-    private static final DecimalFormat SERIAL_NUMBER_FORMATTER = new DecimalFormat(SERIAL_NUMBER_FORMAT);
+    private static final DecimalFormat AREA_NUMBER_FORMATTER 
+            = new DecimalFormat(AREA_NUMBER_FORMAT);
+    private static final DecimalFormat GROUP_NUMBER_FORMATTER 
+            = new DecimalFormat(GROUP_NUMBER_FORMAT);
+    private static final DecimalFormat SERIAL_NUMBER_FORMATTER 
+            = new DecimalFormat(SERIAL_NUMBER_FORMAT);
 
     private final int areaNumber;
     private final int groupNumber;
@@ -79,7 +82,14 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return "***-**-" + this.lastFour;
     }
     
-    // TODO: Write tests for this
+    /**
+     * Gives the last four digits of this Social Security Number (SSN). Use 
+     * {@link #toRedactedString()} if you need the SSN formatted with asterisks 
+     * for the first five digits and zero-padding for the last four if needed.
+     * @return The last four digits. Two examples: if this SSN is 752-98-1729, 
+     * this function would return 1729; if this SSN is 753-25-0064, this 
+     * function would return 64.
+     */
     public int getLastFour() {
         return this.serialNumber;
     }
@@ -101,7 +111,8 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         if (!correctSSNDashPlacement(s)) {
             String excMsg;
             if (EmployerIdentificationNumber.correctEINDashPlacement(s)) {
-                excMsg = "Input \"" + s + "\" is an Employer Identification Number (EIN), not SSN";
+                excMsg = "Input \"" + s 
+                        + "\" is an Employer Identification Number, not an SSN";
             } else {
                 excMsg = "Input \"" + s + "\" is not a properly formatted SSN";
             }

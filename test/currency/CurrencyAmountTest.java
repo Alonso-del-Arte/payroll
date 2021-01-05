@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.Locale;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +35,7 @@ public class CurrencyAmountTest {
     static final Currency DOLLARS = Currency.getInstance(Locale.US);
     static final Currency EUROS = Currency.getInstance("EUR");
     static final Currency DINARS
-            = Currency.getInstance(Locale.forLanguageTag("ar-ly"));
+            = Currency.getInstance(Locale.forLanguageTag("ar-LY"));
     static final Currency YEN = Currency.getInstance(Locale.JAPAN);
 
     @Test
@@ -65,9 +64,25 @@ public class CurrencyAmountTest {
     }
 
     @Test
+    public void testToStringOtherCentAmount() {
+        CurrencyAmount amount = new CurrencyAmount(47, DOLLARS);
+        String expected = "$0.47";
+        String actual = amount.toString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void testToStringNegativeCentAmount() {
         CurrencyAmount amount = new CurrencyAmount(-8, DOLLARS);
         String expected = "$-0.08";
+        String actual = amount.toString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testToStringOtherNegativeCentAmount() {
+        CurrencyAmount amount = new CurrencyAmount(-82, DOLLARS);
+        String expected = "$-0.82";
         String actual = amount.toString();
         assertEquals(expected, actual);
     }
@@ -219,7 +234,6 @@ public class CurrencyAmountTest {
                 + result.toString());
     }
 
-    @Ignore
     @Test(expected = ArithmeticException.class)
     public void testPlusTooMuch() {
         CurrencyAmount amountA = new CurrencyAmount(9000000000000000000L, DOLLARS);
@@ -303,11 +317,12 @@ public class CurrencyAmountTest {
                 + result.toString());
     }
 
-    @Ignore
     @Test(expected = ArithmeticException.class)
     public void testMinusTooMuch() {
-        CurrencyAmount amountA = new CurrencyAmount(-9000000000000000000L, DOLLARS);
-        CurrencyAmount amountB = new CurrencyAmount(1000000000000000000L, DOLLARS);
+        CurrencyAmount amountA = new CurrencyAmount(-9000000000000000000L, 
+                DOLLARS);
+        CurrencyAmount amountB = new CurrencyAmount(1000000000000000000L, 
+                DOLLARS);
         CurrencyAmount result = amountA.minus(amountB);
         System.out.println("Trying to subtract " + amountB.toString() + " from "
                 + amountA.toString()
@@ -534,11 +549,42 @@ public class CurrencyAmountTest {
 
     @Test
     public void testParseDinarAmount() {
-        System.out.println("parseAmount");
         String s = "LYD7063.255";
         CurrencyAmount expected = new CurrencyAmount(7063255, DINARS);
         CurrencyAmount actual = CurrencyAmount.parseAmount(s);
         assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testParseRandomDinarAmount() {
+        int dinars = (int) Math.floor(Math.random() * 10000);
+        int darahim = (int) Math.floor(Math.random() * 950) + 100;
+        String s = "LYD" + dinars + "." + darahim;
+        int cents = dinars * 1000 + darahim;
+        CurrencyAmount expected = new CurrencyAmount(cents, DINARS);
+        CurrencyAmount actual = CurrencyAmount.parseAmount(s);
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void testParseRandomKronerAmount() {
+        Locale swedishLoc = Locale.forLanguageTag("sv-SE");
+        Currency kroner = Currency.getInstance(swedishLoc);
+        int kronor = (int) Math.floor(Math.random() * 10000);
+        int cent = (int) Math.floor(Math.random() * 85) + 10;
+        String s = "SEK" + kronor + "." + cent;
+        int cents = kronor * 100 + cent;
+        CurrencyAmount expected = new CurrencyAmount(cents, kroner);
+        CurrencyAmount actual = CurrencyAmount.parseAmount(s);
+        assertEquals(expected, actual);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testNoParseWithoutSymbol() {
+        String s = "x435.80";
+        CurrencyAmount amount = CurrencyAmount.parseAmount(s);
+        System.out.println("Should not have parsed \"" + s + "\" as " 
+                + amount.toString());
     }
     
     @Test(expected = NullPointerException.class)
