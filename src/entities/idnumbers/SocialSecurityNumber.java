@@ -50,24 +50,8 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return 1073741824;
     }
 
-    // TODO: Remove this equals() override once TIN equals() override is done
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!this.getClass().equals(obj.getClass())) {
-            return false;
-        }
-        return this.idNum == ((SocialSecurityNumber) obj).idNum;
-    }
-
-    // TODO: change to obscurant
-    @Override
-    public int hashCode() {
+    public int hashCodeObscurant() {
         int hash = 239 * this.groupNumber;
         hash += 47 * this.areaNumber;
         hash += 1000000 * this.serialNumber;

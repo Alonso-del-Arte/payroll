@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
  * details.
  *
  * You should have received a copy of the GNU General Public License along with 
@@ -40,27 +40,7 @@ public class EmployerIdentificationNumber extends TaxpayerIdentificationNumber {
         return digits.substring(0, 2) + "-" + digits.substring(2);
     }
     
-    // TODO: Remove this equals() override once TIN equals() override is done
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!this.getClass().equals(obj.getClass())) {
-            return false;
-        }
-        return this.idNum == ((EmployerIdentificationNumber) obj).idNum;
-    }
-    
-    // TODO: Remove this hashCode() override once TIN hashCode() override is done
-    @Override
-    public int hashCode() {
-        return this.idNum;
-    }
-
+    // TODO: Determine what validation is necessary
     public EmployerIdentificationNumber(int number) {
         super(number);
     }
