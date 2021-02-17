@@ -37,9 +37,13 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
         DASHES.setGroupingSeparator('-');
     }
     
-    private static final DecimalFormat FORMATTER = new DecimalFormat();
+    final int idNum;
     
-    protected final int idNum;
+    abstract int hashCodeOffset();
+    
+    int hashCodeObscurant() {
+        return this.hashCodeOffset() + this.idNum;
+    }
     
     // STUB TO FAIL THE FIRST TEST
     @Override
@@ -47,10 +51,12 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
         return false;
     }
     
+    private static int callCount = 0;
+    
     // STUB TO FAIL THE FIRST TEST
     @Override
     public int hashCode() {
-        return Integer.MIN_VALUE;
+        return Integer.MIN_VALUE + callCount++;
     }
     
     public TaxpayerIdentificationNumber(int number) {

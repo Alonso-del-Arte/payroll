@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -18,25 +18,35 @@
 package entities.idnumbers;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Random;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests of the SocialSecurityNumber class.
+ * Tests of the SocialSecurityNumber class. For these tests, I consulted the 
+ * following references:
+ * <ul>
+ *    <li><a href="https://www.ssa.gov/history/ssnmyth.html">Social Security 
+ *    History: A Myth About Social Security Numbers</a>: Explains that the group 
+ *    number in 1936 referred to the filing cabinet the Social Security record 
+ *    was in, not the race of the record's person.</li>
+ *    <li><a href="https://www.ssa.gov/employer/stateweb.htm">Social Security 
+ *    Number Allocations</a>: Explains how Social Security Numbers were 
+ *    allocated prior to 2011.</li>
+ *    <li><a href="https://www.ssa.gov/history/ssn/misused.html">Social Security 
+ *    Cards Issued by Woolworth</a>: Tells the story of 078-05-1120, the most 
+ *    misused Social Security Number of all time.</li>
+ *    <li><a href="https://www.irs.gov/forms-pubs/about-form-ss-4">About Form 
+ *    SS-4, Application for Employer Identification Number (EIN)</a> (this page 
+ *    is from the IRS, not the Social Security Administration).</li>
+ * </ul>
  * @author Alonso del Arte
  */
 public class SocialSecurityNumberTest {
     
-    // TODO: Move the following references into the appropriate Javadoc
-    
-    // REF: https://www.ssa.gov/history/ssnmyth.html
-    
-    // REF: https://www.ssa.gov/employer/stateweb.htm
-    
-    // REF: https://www.ssa.gov/history/ssn/misused.html
-    
-    // REF: https://www.irs.gov/forms-pubs/about-form-ss-4
+    private static final Random RANDOM = new Random();
     
     @Test
     public void testReferentialEquality() {
@@ -71,11 +81,42 @@ public class SocialSecurityNumberTest {
         SocialSecurityNumber sameSSN = new SocialSecurityNumber(219099999);
         assertEquals(someSSN, sameSSN);
     }
+    
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        int number = RANDOM.nextInt(773000000);
+        SocialSecurityNumber someSSN = new SocialSecurityNumber(number);
+        SocialSecurityNumber sameSSN = new SocialSecurityNumber(number);
+        assertEquals(someSSN.hashCode(), sameSSN.hashCode());
+    }
+    
+    @Test
+    public void testHashCodeUniqueness() {
+        HashSet<SocialSecurityNumber> ssns = new HashSet<>();
+        HashSet<Integer> hashes = new HashSet<>();
+        SocialSecurityNumber ssn;
+        int hash, number;
+        do {
+            number = 772000000 + RANDOM.nextInt(1000000);
+            ssn = new SocialSecurityNumber(number);
+            ssns.add(ssn);
+            hash = ssn.hashCode();
+            hashes.add(hash);
+        } while (number % 500 != 0);
+        int numberOfSSNs = ssns.size();
+        int numberOfHashes = hashes.size();
+        System.out.println("Created " + numberOfSSNs + " SSN instances with " 
+                + numberOfHashes + " hash codes");
+        String msg = "Each SSN instance should have a unique hash code";
+        assertEquals(msg, numberOfSSNs, numberOfHashes);
+    }
 
     /**
      * Test of the toString function, of the class SocialSecurityNumber. The 
      * Social Security Administration asserts that an SSN with area number 000 
-     * will never be assigned to anyone.
+     * will never be assigned to anyone. However, it's still necessary to test 
+     * that SSNs are zero-padded when necessary.
      */
     @Test
     public void testToString() {
@@ -186,16 +227,15 @@ public class SocialSecurityNumberTest {
     public void testCorrectSSNDashPlacement() {
         System.out.println("correctSSNDashPlacement");
         String s = "***-**-1120";
-        String assertionMessage = "\"" + s + "\" has correct SSN dash placement";
-        assert SocialSecurityNumber.correctSSNDashPlacement(s) : assertionMessage;
+        String msg = "\"" + s + "\" has correct SSN dash placement";
+        assert SocialSecurityNumber.correctSSNDashPlacement(s) : msg;
     }
     
     @Test
     public void testIncorrectSSNDashPlacement() {
         String s = "12-3456789";
-        String assertionMessage = "\"" + s 
-                + "\" does not have correct SSN dash placement";
-        assert !SocialSecurityNumber.correctSSNDashPlacement(s) : assertionMessage;
+        String msg = "\"" + s + "\" does not have correct SSN dash placement";
+        assert !SocialSecurityNumber.correctSSNDashPlacement(s) : msg;
     }
     
     /**
@@ -218,10 +258,10 @@ public class SocialSecurityNumberTest {
         String s = "12-3456789";
         try {
             SocialSecurityNumber ein = SocialSecurityNumber.parseSSN(s);
-            String failMsg = "EIN \"" + s 
+            String msg = "EIN \"" + s 
                     + "\" should not have been interpresented as SSN \"" + ein 
                     + "\".";
-            fail(failMsg);
+            fail(msg);
         } catch (NumberFormatException nfe) {
             System.out.println("Trying to interpret EIN \"" + s 
                     + "\" as an SSN correctly caused NumberFormatException");
@@ -229,13 +269,13 @@ public class SocialSecurityNumberTest {
             String allCaps = nfe.getMessage().toUpperCase();
             boolean mentionEIN = allCaps.contains("EIN") 
                     || allCaps.contains("EMPLOYER IDENTIFICATION NUMBER");
-            String msg = "Message should mention Employer Identification Number (EIN)";
+            String msg = "Exception message should mention EIN";
             assert mentionEIN : msg;
         } catch (RuntimeException re) {
-            String failMsg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to interpret EIN \""
+            String msg = re.getClass().getName() 
+                    + " is the wrong exception to throw for intepreting EIN \""
                     + s + "\" as an SSN";
-            fail(failMsg);
+            fail(msg);
         }
     }
     
@@ -244,56 +284,64 @@ public class SocialSecurityNumberTest {
         String s = "Not an SSN";
         try {
             SocialSecurityNumber badSSN = SocialSecurityNumber.parseSSN(s);
-            String failMsg = "Bad String \"" + s 
-                    + "\" should not have been interpresented as SSN \"" + badSSN 
-                    + "\".";
-            fail(failMsg);
+            String msg = "\"" + s 
+                    + "\" should not have been interpresented as SSN \"" 
+                    + badSSN ;
+            fail(msg);
         } catch (NumberFormatException nfe) {
-            System.out.println("Trying to interpret bad String \"" + s 
+            System.out.println("Trying to interpret \"" + s 
                     + "\" as an SSN correctly caused NumberFormatException");
             System.out.println("\"" + nfe.getMessage() + "\"");
             String allCaps = nfe.getMessage().toUpperCase();
             boolean mentionEIN = allCaps.contains("EIN") 
                     || allCaps.contains("EMPLOYER IDENTIFICATION NUMBER");
-            String msg = "Message should not mention Employer Identification Number (EIN)";
+            String msg = "Exception message should not mention EIN";
             assert !mentionEIN : msg;
         } catch (RuntimeException re) {
-            String failMsg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to interpret bad String \""
+            String msg = re.getClass().getName() 
+                    + " is the wrong exception to throw for interpreting \""
                     + s + "\" as an SSN";
-            fail(failMsg);
+            fail(msg);
         }
     }
     
     @Test
     public void testNoNegativeSSNs() {
+        int badNumber = -RANDOM.nextInt(772989799) - 1;
         try {
-            SocialSecurityNumber badSSN = new SocialSecurityNumber(-1);
-            String failMsg = "Should not have been able to create SSN " + badSSN.toString();
-            fail(failMsg);
+            SocialSecurityNumber badSSN = new SocialSecurityNumber(badNumber);
+            String msg = "Should not have been able to create SSN " 
+                    + badSSN.toString();
+            fail(msg);
         } catch (IllegalArgumentException iae) {
-            System.out.println("Trying to create SSN with negative number correctly caused IllegalArgumentException");
+            System.out.println("Trying to use " + badNumber 
+                    + " for SSN correctly caused IllegalArgumentException");
             System.out.println("\"" + iae.getMessage() + "\"");
         } catch (RuntimeException re) {
-            String failMsg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to create SSN with negative number";
-            fail(failMsg);
+            String msg = re.getClass().getName() 
+                    + " is the wrong exception to throw for trying to use " 
+                    + badNumber + " to create SSN";
+            fail(msg);
         }
     }
 
     @Test
     public void testNoArea773SSNs() {
+        int badNumber = 773000000 + RANDOM.nextInt(1000000);
         try {
-            SocialSecurityNumber badSSN = new SocialSecurityNumber(773000000);
-            String failMsg = "Should not have been able to create SSN " + badSSN.toString();
-            fail(failMsg);
+            SocialSecurityNumber badSSN = new SocialSecurityNumber(badNumber);
+            String msg = "Should not have been able to create SSN " 
+                    + badSSN.toString();
+            fail(msg);
         } catch (IllegalArgumentException iae) {
-            System.out.println("Trying to create SSN with area 773 correctly caused IllegalArgumentException");
+            System.out.println("Trying to create SSN with area 773 (" 
+                    + badNumber + ") correctly caused IllegalArgumentException");
             System.out.println("\"" + iae.getMessage() + "\"");
         } catch (RuntimeException re) {
-            String failMsg = re.getClass().getName() 
-                    + " is the wrong exception to throw for trying to create SSN with area 773";
-            fail(failMsg);
+            String msg = re.getClass().getName() 
+                    + " is the wrong exception to throw for trying to use " 
+                    + badNumber + " (area 773) for an SSN";
+            fail(msg);
         }
     }
 

@@ -17,6 +17,8 @@
  */
 package entities.idnumbers;
 
+import java.util.Random;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -59,6 +61,11 @@ public class TaxpayerIdentificationNumberTest {
             extends TaxpayerIdentificationNumber {
         
         @Override
+        int hashCodeOffset() {
+            return 0;
+        }
+    
+        @Override
         public String toString() {
             return "0-" + this.idNum;
         }
@@ -66,7 +73,7 @@ public class TaxpayerIdentificationNumberTest {
         public TaxpayerIdentificationNumberImpl(int num) {
             super(num);
         }
-    
+
     }
     
 }

@@ -44,6 +44,11 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
 
     private final String ssnWDashes;
     private final String lastFour;
+    
+    @Override
+    int hashCodeOffset() {
+        return 1073741824;
+    }
 
     // TODO: Remove this equals() override once TIN equals() override is done
     @Override
@@ -60,6 +65,7 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return this.idNum == ((SocialSecurityNumber) obj).idNum;
     }
 
+    // TODO: change to obscurant
     @Override
     public int hashCode() {
         int hash = 239 * this.groupNumber;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Alonso del Arte
+ * Copyright (C) 2021 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -18,13 +18,47 @@
 package entities.idnumbers;
 
 /**
- *
+ * Represents an Employer Identification Numbers (EIN). Maybe this class isn't 
+ * as useful in the payroll project as it is in the banking account project. It 
+ * is included in the payroll project more for the sake of completeness.
  * @author Alonso del Arte
  */
 public class EmployerIdentificationNumber extends TaxpayerIdentificationNumber {
     
     static boolean correctEINDashPlacement(String s) {
         return (s.indexOf('-') == 2) && (s.indexOf('-', 3) == -1);
+    }
+    
+    @Override
+    int hashCodeOffset() {
+        return -1073741824;
+    }
+    
+    @Override
+    public String toString() {
+        String digits = Integer.toString(this.idNum);
+        return digits.substring(0, 2) + "-" + digits.substring(2);
+    }
+    
+    // TODO: Remove this equals() override once TIN equals() override is done
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!this.getClass().equals(obj.getClass())) {
+            return false;
+        }
+        return this.idNum == ((EmployerIdentificationNumber) obj).idNum;
+    }
+    
+    // TODO: Remove this hashCode() override once TIN hashCode() override is done
+    @Override
+    public int hashCode() {
+        return this.idNum;
     }
 
     public EmployerIdentificationNumber(int number) {
