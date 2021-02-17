@@ -18,7 +18,6 @@
 package entities.idnumbers;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 /**
@@ -31,7 +30,8 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
     
     private static final long serialVersionUID = -5855511363530100806L;
     
-    protected static final DecimalFormatSymbols DASHES = new DecimalFormatSymbols();
+    protected static final DecimalFormatSymbols DASHES 
+            = new DecimalFormatSymbols();
     
     static {
         DASHES.setGroupingSeparator('-');
@@ -45,18 +45,23 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
         return this.hashCodeOffset() + this.idNum;
     }
     
-    // STUB TO FAIL THE FIRST TEST
     @Override
     public boolean equals(Object obj) {
-        return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!this.getClass().equals(obj.getClass())) {
+            return false;
+        }
+        return this.idNum == ((TaxpayerIdentificationNumber) obj).idNum;
     }
     
-    private static int callCount = 0;
-    
-    // STUB TO FAIL THE FIRST TEST
     @Override
     public int hashCode() {
-        return Integer.MIN_VALUE + callCount++;
+        return this.hashCodeObscurant() + this.hashCodeOffset();
     }
     
     public TaxpayerIdentificationNumber(int number) {

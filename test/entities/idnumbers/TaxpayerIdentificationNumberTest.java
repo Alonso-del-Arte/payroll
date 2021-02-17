@@ -28,11 +28,70 @@ import static org.junit.Assert.*;
  */
 public class TaxpayerIdentificationNumberTest {
     
+    private static final Random RANDOM = new Random();
+    
     @Test
     public void testReferentialEquality() {
         TaxpayerIdentificationNumber someNumber 
                 = new TaxpayerIdentificationNumberImpl(123456789);
         assertEquals(someNumber, someNumber);
+    }
+    
+    @Test
+    public void testNotEqualsNull() {
+        TaxpayerIdentificationNumber someNumber 
+                = new TaxpayerIdentificationNumberImpl(123456789);
+        assertNotEquals(someNumber, null);
+    }
+    
+    @Test
+    public void testNotEqualsDiffClass() {
+        int number = 772000000 + RANDOM.nextInt(1000000);
+        TaxpayerIdentificationNumber tin 
+                = new TaxpayerIdentificationNumberImpl(number);
+        SocialSecurityNumber ssn = new SocialSecurityNumber(number);
+        assertNotEquals(tin, ssn);
+    }
+    
+    @Test
+    public void testNotEquals() {
+        int number = RANDOM.nextInt(1000000);
+        TaxpayerIdentificationNumber someTIN 
+                = new TaxpayerIdentificationNumberImpl(981000000 + number);
+        TaxpayerIdentificationNumber diffTIN 
+                = new TaxpayerIdentificationNumberImpl(993000000 + number);
+        assertNotEquals(someTIN, diffTIN);
+    }
+    
+    @Test
+    public void testEquals() {
+        System.out.println("equals");
+        int number = 978000000 + RANDOM.nextInt(1000000);
+        TaxpayerIdentificationNumber someTIN 
+                = new TaxpayerIdentificationNumberImpl(number);
+        TaxpayerIdentificationNumber sameTIN 
+                = new TaxpayerIdentificationNumberImpl(number);
+        assertEquals(someTIN, sameTIN);
+    }
+    
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        int number = 953000000 + RANDOM.nextInt(1000000);
+        TaxpayerIdentificationNumber someTIN 
+                = new TaxpayerIdentificationNumberImpl(number);
+        TaxpayerIdentificationNumber sameTIN 
+                = new TaxpayerIdentificationNumberImpl(number);
+        assertEquals(someTIN.hashCode(), sameTIN.hashCode());
+    }
+    
+    @Test
+    public void testHashCodeSameNumberDiffClass() {
+        int number = 772000000 + RANDOM.nextInt(1000000);
+        TaxpayerIdentificationNumber someTIN 
+                = new TaxpayerIdentificationNumberImpl(number);
+        SocialSecurityNumber someSSN = new SocialSecurityNumber(number);
+        assertNotEquals(someTIN.hashCode(), someSSN.hashCode());
     }
     
     @Test
