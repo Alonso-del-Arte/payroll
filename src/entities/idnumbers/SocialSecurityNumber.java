@@ -20,12 +20,15 @@ package entities.idnumbers;
 import java.text.DecimalFormat;
 
 /**
- * Represents a Social Security Number (SSN).
+ * Represents a Social Security Number (SSN). Provides means to redact SSNs to 
+ * their last four digits, and for parsing SSNs from <code>String</code> 
+ * instances.
+ * @since Version 0.1.
  * @author Alonso del Arte
  */
 public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
 
-    private static final long serialVersionUID = -6723595580071797793L;
+    private static final long serialVersionUID = 4549583346832780900L;
     
     public static final String AREA_NUMBER_FORMAT = "000";
     public static final String GROUP_NUMBER_FORMAT = "00";
@@ -47,14 +50,14 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
     
     @Override
     int hashCodeOffset() {
-        return 1073741824;
+        return 16384;
     }
 
     @Override
     public int hashCodeObscurant() {
         int hash = 239 * this.groupNumber;
         hash += 47 * this.areaNumber;
-        hash += 1000000 * this.serialNumber;
+        hash += 100000 * this.serialNumber;
         return hash;
     }
 

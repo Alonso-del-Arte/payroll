@@ -25,6 +25,8 @@ package entities.idnumbers;
  */
 public class EmployerIdentificationNumber extends TaxpayerIdentificationNumber {
     
+    private static final long serialVersionUID = 4549583355422715492L;
+    
     static boolean correctEINDashPlacement(String s) {
         return (s.indexOf('-') == 2) && (s.indexOf('-', 3) == -1);
     }

@@ -94,17 +94,43 @@ public class TaxpayerIdentificationNumberTest {
         assertNotEquals(someTIN.hashCode(), someSSN.hashCode());
     }
     
+    private boolean containsNoDigitCharacters(String s) {
+        boolean flag = true;
+        char[] characters = s.toCharArray();
+        int curr = 0;
+        int len = characters.length;
+        while (flag && curr < len) {
+            flag = !Character.isDigit(characters[curr]);
+            curr++;
+        }
+        return flag;
+    }
+    
+    /**
+     * Test of the TaxpayerIdentificationNumber constructor. Negative numbers 
+     * should be rejected with IllegalArgumentException. Furthermore, the 
+     * exception message must not be null or empty. But also it must not include 
+     * the negative number itself, out of a perhaps excessive data privacy 
+     * precaution.
+     */
     @Test
     public void testConstructorRejectsNegativeNumbers() {
+        int badNumber = -RANDOM.nextInt(772989799) - 1;
         try {
-            TaxpayerIdentificationNumber badNumber 
-                    = new TaxpayerIdentificationNumberImpl(-1);
+            TaxpayerIdentificationNumber badTIN 
+                    = new TaxpayerIdentificationNumberImpl(badNumber);
             String msg = "Should not have been able to create " 
-                    + badNumber.toString();
+                    + badTIN.toString() + " with number " + badNumber;
             fail(msg);
         } catch (IllegalArgumentException iae) {
             System.out.println("Correct IllegalArgumentException negative TIN");
-            System.out.println("\"" + iae.getMessage() + "\"");
+            String excMsg = iae.getMessage();
+            assert excMsg != null : "Exception message should not be null";
+            assert !excMsg.isEmpty() : "Exception message should not be empty";
+            System.out.println("\"" + excMsg + "\"");
+            String msg = "Exception message should not contain digits, e.g., " 
+                    + badNumber;
+            assert containsNoDigitCharacters(excMsg) : msg;
         } catch (RuntimeException re) {
             String msg = re.getClass().getName() 
                     + " is the wrong exception for TIN with negative number";
@@ -118,6 +144,8 @@ public class TaxpayerIdentificationNumberTest {
      */
     private static class TaxpayerIdentificationNumberImpl 
             extends TaxpayerIdentificationNumber {
+        
+        private static final long serialVersionUID = 4549793186049961572L;
         
         @Override
         int hashCodeOffset() {
