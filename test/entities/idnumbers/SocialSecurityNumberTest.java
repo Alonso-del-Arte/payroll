@@ -224,6 +224,27 @@ public class SocialSecurityNumberTest {
     }
     
     @Test
+    public void testMatchLastFourBeyondTenThousand() {
+        int num = 752980000 + RANDOM.nextInt(10000);
+        SocialSecurityNumber ssn = new SocialSecurityNumber(num);
+        int numWithSameLastFour = num - ((RANDOM.nextInt(95) + 1) * 10000);
+        String msg = "Last four of " + ssn.toRedactedString() + " should match " 
+                + numWithSameLastFour;
+        assert ssn.matchesLastFour(numWithSameLastFour) : msg;
+    }
+    
+    @Test
+    public void testMatchLastFourNeverNegative() {
+        int num = 752980000 + RANDOM.nextInt(10000);
+        SocialSecurityNumber ssn = new SocialSecurityNumber(num);
+        String msg = "Last four of " + ssn.toRedactedString() 
+                + " should NOT match ";
+        for (int i = -1; i > -10000; i--) {
+            assert !ssn.matchesLastFour(i) : (msg + i);
+        }
+    }
+    
+    @Test
     public void testCorrectSSNDashPlacement() {
         System.out.println("correctSSNDashPlacement");
         String s = "***-**-1120";
