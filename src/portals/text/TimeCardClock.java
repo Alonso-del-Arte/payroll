@@ -35,6 +35,11 @@ import java.util.Scanner;
  * @author Alonso del Arte
  */
 public class TimeCardClock {
+    
+    // STUB
+    private static int getLastFour(Scanner scan) {
+        return 0;
+    }
 
     // TODO: Break down into smaller units
     // TODO: Address dereferencing possible null pointer warning

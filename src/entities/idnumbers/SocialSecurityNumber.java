@@ -23,6 +23,9 @@ import java.text.DecimalFormat;
  * Represents a Social Security Number (SSN). Provides means to redact SSNs to 
  * their last four digits, and for parsing SSNs from <code>String</code> 
  * instances.
+ * <p>For much of this documentation I use the SSN 752-98-1729 as an example. To 
+ * my knowledge, this SSN has never been assigned to anyone born prior to 
+ * 2011.</p>
  * @since Version 0.1.
  * @author Alonso del Arte
  */
@@ -54,13 +57,20 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
     }
 
     @Override
-    public int hashCodeObscurant() {
+    int hashCodeObscurant() {
         int hash = 239 * this.groupNumber;
         hash += 47 * this.areaNumber;
         hash += 100000 * this.serialNumber;
         return hash;
     }
 
+    /**
+     * Gives a textual representation of this Social Security Number (SSN) with 
+     * dashes. If a textual representation with the first five digits redacted 
+     * is needed, use {@link #toRedactedString()}.
+     * @return The SSN with dashes. For example, for 752-98-1729, this would 
+     * give "752-98-1729".
+     */
     @Override
     public String toString() {
         return this.ssnWDashes;
@@ -87,10 +97,30 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return this.serialNumber;
     }
     
+    /**
+     * Determines whether the given integer matches the last four digits of this 
+     * Social Security Number (SSN).
+     * @param num The number to match. For example, 1729. Preferably a number 
+     * between 0 and 9999, but greater numbers will also work. Not recommend for 
+     * use with negative numbers (current behavior with negative numbers is not 
+     * guaranteed for later versions).
+     * @return True if the last four match, false otherwise. For example, if 
+     * this SSN is 752-98-1729, then 1729 will match. But if this SSN is 
+     * 753-25-0064, then 1729 will not match.
+     */
     public boolean matchesLastFour(int num) {
-        return this.serialNumber == num;
+        return this.serialNumber == (num % 10000);
     }
     
+    /**
+     * Determines whether two Social Security Numbers (SSNs) match in their last 
+     * four digits. This should of course be the case if they're the exact same 
+     * SSN.
+     * @param other The SSN to compare. For example, 089-22-1729.
+     * @return True if the last four digits match, false otherwise. For example, 
+     * 752-98-1729 will match with 089-22-1729. 089-22-1730 will not.
+     * @throws NullPointerException If <code>other</code> is null.
+     */
     public boolean matchesLastFour(SocialSecurityNumber other) {
         return this.serialNumber == other.serialNumber;
     }
@@ -100,6 +130,18 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
                 && (s.indexOf('-', 7) == -1);
     }
 
+    /**
+     * Parses a Social Security Number (SSN) from text.
+     * @param s The text to parse. For example, "752-98-1729".
+     * @return A <code>SocialSecurityNumber</code> object. For example, 
+     * 752-98-1729.
+     * @throws IllegalArgumentException If <code>s</code> contains a validly 
+     * formatted SSN with area number 773 or greater (e.g., 774-05-1729).
+     * @throws NullPointerException If <code>s</code> is null.
+     * @throws NumberFormatException If <code>s</code> does not contain a number 
+     * with the proper dash placement. If <code>s</code> can be understood as an 
+     * Employer Identification Number (EIN), the exception message will say so.
+     */
     public static SocialSecurityNumber parseSSN(String s) {
         if (!correctSSNDashPlacement(s)) {
             String excMsg;
@@ -116,6 +158,13 @@ public class SocialSecurityNumber extends TaxpayerIdentificationNumber {
         return new SocialSecurityNumber(num);
     }
 
+    /**
+     * Constructor.
+     * @param number The number. Should be at least 0 but no greater than 
+     * 772999999 (which corresponds to 772-99-9999).
+     * @throws IllegalArgumentException If <code>number</code> is negative or 
+     * greater than 772999999.
+     */
     public SocialSecurityNumber(int number) {
         super(number);
         if (number > 772999999) {

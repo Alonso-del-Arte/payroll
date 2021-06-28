@@ -45,6 +45,18 @@ public class DateTimeRange implements Comparable<DateTimeRange>, Serializable {
         return unit.between(this.startTime, this.finishTime);
     }
     
+    /**
+     * Determines whether another time range is properly contained in this time 
+     * range. Depending on the purpose, this may or may not be a significant 
+     * difference from the other containment functions.
+     * @param other The time range to be tested for containment within this 
+     * range.
+     * @return True if and only if this time range begins before 
+     * <code>other</code> begins and ends after <code>other</code> ends. A 
+     * difference of one second is sufficient (e.g., this time range begins one 
+     * second before <code>other</code> and ends one second after 
+     * <code>other</code>.
+     */
     private boolean containsProperly(DateTimeRange other) {
         return (this.startTime.isBefore(other.startTime) 
                 && this.finishTime.isAfter(other.finishTime));

@@ -42,7 +42,7 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
     final int idNum;
     
     /**
-     * Provides an offset for the hash code function. The idea is that a 
+     * Provides an offset for the hash code function. The idea here is that a 
      * subclass will provide the same offset for all its instances, to separate 
      * its instances' hash codes from the hash codes for a different subclass. 
      * However, a more nuanced approach may be workable.
@@ -53,11 +53,13 @@ public abstract class TaxpayerIdentificationNumber implements Serializable {
     
     /**
      * Obfuscates the identification number for the hash code. Generally 
-     * subclasses should override.
+     * subclasses should override. The idea here is that the hash code will not 
+     * reveal the identification number.
      * @return A number related to the identification number, preferably through 
      * a one-way function. If not overridden, this simply gives the 
      * identification number plus {@link #hashCodeOffset()} (which, unlike this 
-     * function, must be overridden by subclasses if they're not abstract).
+     * function, must be overridden by subclasses if they're not abstract). This 
+     * may or may not provide sufficient obfuscation.
      */
     int hashCodeObscurant() {
         return this.hashCodeOffset() + this.idNum;
