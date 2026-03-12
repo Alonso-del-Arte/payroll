@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Alonso del Arte
+ * Copyright (C) 2026 Alonso del Arte
  *
  * This program is free software; you can redistribute it and/or modify it under 
  * the terms of the GNU General Public License as published by the Free Software 
@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT 
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
  * details.
  *
  * You should have received a copy of the GNU General Public License along with 
@@ -40,24 +40,6 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>,
     
     private static Currency parsedCurrency;
     
-    @Override
-    public String toString() {
-        final int centPlaces = this.currencyID.getDefaultFractionDigits();
-        if (centPlaces == 0) {
-            return this.currencyID.getSymbol() + this.amountInCents;
-        }
-        String numStr = Long.toString(Math.abs(this.amountInCents));
-        while (numStr.length() <= centPlaces) {
-            numStr = "0" + numStr;
-        }
-        if (this.amountInCents < 0) {
-            numStr = "-" + numStr;
-        }
-        int decPointPlace = numStr.length() - centPlaces;
-        return this.currencyID.getSymbol() + numStr.substring(0, decPointPlace) 
-                + "." + numStr.substring(decPointPlace);
-    }
-
     @Override
     public int hashCode() {
 //        return 0;
