@@ -40,31 +40,6 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>,
     
     private static Currency parsedCurrency;
     
-    @Override
-    public int hashCode() {
-//        return 0;
-        int hash = 5;
-        hash = 37 * hash + (int) (this.amountInCents 
-                ^ (this.amountInCents >>> 32));
-        hash = 37 * hash + Objects.hashCode(this.currencyID);
-        return hash;
-    }
-
-    @Override
-    public final boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof CurrencyAmount)) {
-            return false;
-        }
-        final CurrencyAmount other = (CurrencyAmount) obj;
-        if (this.amountInCents != other.amountInCents) {
-            return false;
-        }
-        return this.currencyID.equals(other.currencyID);
-    }
-
     public long getAmountInCents() {
         return this.amountInCents;
     }
