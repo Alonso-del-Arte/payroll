@@ -1,6 +1,6 @@
-This project is now open to Hacktoberfest 2024.
+This project will be open to Hacktoberfest 2026.
 
-# Contribution Guidelines for Hacktoberfest 2024 Contributors
+# Contribution Guidelines for Hacktoberfest 2026 Contributors
 
 Pull requests imposing Maven or any other specific build tool will be rejected 
 as spam. Anyone who wants to work on this project should use their favorite 
