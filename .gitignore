@@ -41,6 +41,9 @@ nb-configuration.xml
 # Vim
 *.swp
 
+# macOS
+.DS_Store
+
 # Miscellaneous
 src/draft/
 src/secrets/
