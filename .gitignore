@@ -38,6 +38,9 @@ manifest.mf
 nbactions.xml
 nb-configuration.xml
 
+# Vim
+*.swp
+
 # Miscellaneous
 src/draft/
 src/secrets/
