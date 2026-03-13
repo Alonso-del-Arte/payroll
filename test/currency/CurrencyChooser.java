@@ -23,4 +23,65 @@ import java.util.stream.Collectors;
  */
 public class CurrencyChooser {
     
+    // TODO: Write tests for this
+    public static Set<Currency> getSuitableCurrencies() {
+        return new HashSet<>();
+    }
+
+    // TODO: Write tests for this
+    public static boolean isSuitableCurrency(Currency currency) {
+        return false;
+    }
+    
+    // TODO: Write tests for this
+    public static boolean isHistoricalCurrency(Currency currency) {
+        return false;
+    }
+
+    // TODO: Write tests for this
+    public static boolean isEuroReplacedCurrency(Currency currency) {
+        return false;
+    }
+
+    // TODO: Write tests for this
+    public static boolean isPseudocurrency(Currency currency) {
+        return false;
+    }
+    
+    // TODO: Write tests for this
+    public static Currency choosePseudocurrency() {
+        return Currency.getInstance("EUR");
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrency() {
+        return Currency.getInstance("XTS");
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrency(int fractionDigits) {
+        return Currency.getInstance("XTS");
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrency(Predicate<Currency> predicate) {
+        return Currency.getInstance("XTS");
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrency(Set<Currency> set) {
+        return Currency.getInstance("XTS");
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrencyOtherThan(Currency currency) {
+        return currency;
+    }
+
+    // TODO: Write tests for this
+    public static Currency chooseCurrencyOtherThan(Currency currency, 
+            Set<Currency> set) {
+        return currency;
+    }
+
 }
