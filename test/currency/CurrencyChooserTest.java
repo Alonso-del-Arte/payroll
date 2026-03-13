@@ -55,7 +55,7 @@ public class CurrencyChooserTest {
     
     private static final String[] OTHER_EXCLUSION_CODES = {"AYM", "BGL", "BOV", 
         "CHE", "CHW", "COU", "GWP", "MGF", "MXV", "SRG", "STN", "TPE", "USN", 
-        "USS", "UYI", "VED", "ZWN"};
+        "USS", "UYI", "ZWN"};
     
     static {
         for (Currency currency : CURRENCIES) {
