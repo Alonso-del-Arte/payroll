@@ -5,6 +5,18 @@
  */
 package currency;
 
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author Alonso del Arte
