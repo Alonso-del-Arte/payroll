@@ -108,4 +108,15 @@ public class CurrencyChooserTest {
                 && !shouldOtherwiseBeExcluded(currency);
     } 
     
+    @Test
+    public void testGetSuitableCurrencies() {
+        System.out.println("getSuitableCurrencies");
+        Set<Currency> currencies = Currency.getAvailableCurrencies();
+        Set<Currency> expected = currencies.stream()
+                .filter(currency -> accept(currency))
+                .collect(Collectors.toSet());
+        Set<Currency> actual = CurrencyChooser.getSuitableCurrencies();
+        assertEquals(expected, actual);
+    }
+    
 }
