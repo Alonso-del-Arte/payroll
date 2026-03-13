@@ -119,4 +119,16 @@ public class CurrencyChooserTest {
         assertEquals(expected, actual);
     }
     
+    @Test
+    public void testIsSuitableCurrency() {
+        System.out.println("isSuitableCurrency");
+        Set<Currency> currencies = CurrencyChooser.getSuitableCurrencies();
+        currencies.forEach((currency) -> {
+            String msg = "Currency " + currency.getDisplayName() + " ("
+                    + currency.getCurrencyCode() 
+                    + ") should be considered suitable";
+            assert CurrencyChooser.isSuitableCurrency(currency) : msg;
+        });
+    }
+    
 }
