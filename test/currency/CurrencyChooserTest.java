@@ -58,7 +58,7 @@ public class CurrencyChooserTest {
         "USS", "UYI", "ZWN"};
     
     static {
-        for (Currency currency : CURRENCIES) {
+        CURRENCIES.forEach((currency) -> {
             int fractDigits = currency.getDefaultFractionDigits();
             if (fractDigits < 0) {
                 PSEUDO_CURRENCIES.add(currency);
@@ -72,7 +72,7 @@ public class CurrencyChooserTest {
                 }
                 digitGroupedSet.add(currency);
             }
-        }
+        });
         CURRENCIES.removeAll(PSEUDO_CURRENCIES);
         TOTAL_NUMBER_OF_CURRENCIES = CURRENCIES.size();
     }
